@@ -81,8 +81,8 @@ jobs:
              npm install
              npm test
 
-                
-  test-backend:
+              
+  test-frontend:
     docker:
       - image: cimg/node:13.8.0
     steps:
