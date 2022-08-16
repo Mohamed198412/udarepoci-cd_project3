@@ -82,7 +82,7 @@ jobs:
              npm test
 
               
-  test-frontend:
+  test-backend:
     docker:
       - image: cimg/node:13.8.0
     steps:
