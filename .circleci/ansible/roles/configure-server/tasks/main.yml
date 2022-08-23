@@ -1,19 +1,59 @@
-- name: "add node.js from nodesource"
-  become: true
-  shell: |
-   curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
 
-- name: "install node.js 13"
+- name: "update apt"
   become: true
-  apt: 
-    name: ["nodejs"]
+  apt:
+    update_cache: yes
+
+- name: "upgrade apt packages"
+  become: true
+  apt:
+    upgrade: "yes"
+
+- name: "install dependencies."
+  become: true
+  apt:
+    name: ["nodejs", "npm"]
     state: latest
     update_cache: yes
 
-- name: "Install PM2 Globally"
+- name: "install n"
+  become: true
+  npm:
+    name: n
+    global: yes
+    production: yes
+
+- name: "install nodejs 14.20.1"
+  become: true
+  shell: |
+   curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+
+- name: "install pm2"
+  become: true
   npm:
     name: pm2
-    global: yes 
+    global: yes
+    production: yes
+    state: present
+
+
+
+# - name: "add node.js from nodesource"
+#   become: true
+#   shell: |
+#    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+
+# - name: "install node.js 13"
+#   become: true
+#   apt: 
+#     name: ["nodejs"]
+#     state: latest
+#     update_cache: yes
+
+# - name: "Install PM2 Globally"
+#   npm:
+#     name: pm2
+#     global: yes 
 
 
     
