@@ -282,7 +282,7 @@ jobs:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
      # Here's where you will add some code to rollback on failure      
 
-deploy-frontend:
+  deploy-frontend:
     docker:
       - image: cimg/node:13.14.0
     steps:
