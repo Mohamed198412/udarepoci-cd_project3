@@ -205,20 +205,40 @@ jobs:
 
   configure-infrastructure:
     docker:
-      - image: cimg/base:stable 
+      - image: python:3.7-alpine3.11
     steps:
-      - checkout 
-      - install_ansible
-      - add_ssh_keys:
-          fingerprints: ["7d:21:d4:90:fd:db:3c:73:6e:59:3c:af:be:d9:22:c1"]
+      - checkout
       - attach_workspace:
           at: ~/
       - run:
           name: Install dependencies
           command: |
-            cd .circleci/ansible 
-            cat inventory.txt 
-            ansible-playbook -i inventory.txt configure-server.yml 
+            apk add --update curl nodejs npm ansible zip
+            pip install awscli
+      - run:
+          name: Build backend app
+          command: |
+            cd ~/project/backend
+            npm i
+            npm run build
+            cd dist
+            cp ../package.json .
+            zip -rq dist.zip *
+            mkdir -p ~/project/.circleci/ansible/roles/deploy_backend/files/
+            mv dist.zip ~/project/.circleci/ansible/roles/deploy_backend/files/
+      - add_ssh_keys:
+          fingerprints: ["7d:21:d4:90:fd:db:3c:73:6e:59:3c:af:be:d9:22:c1"]
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Setup EC2 instance & copy compiled backend to the EC2 instance
+          command: |
+            ls ~/project/.circleci/ansible/roles/deploy_backend/files/
+            cd ~/project/backend
+            ansible-galaxy install weareinteractive.environment
+            ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/playbook.yml
+      - destroy_environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}" 
       - destroy_environment 
            
  #     Here's where you will add some code to rollback on failure      
