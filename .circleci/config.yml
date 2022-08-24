@@ -284,7 +284,7 @@ jobs:
             ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/configure-server.yml
       - destroy_environment:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}" 
-      - destroy_environment 
+      
            
  #     Here's where you will add some code to rollback on failure      
 
@@ -431,8 +431,14 @@ jobs:
           name: Backend smoke test
           command: |
              BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
-             API_URL="http://${BACKEND_IP}:3030"
-             curl "${API_URL}/api/status" 
+             export API_URL="http://${BACKEND_IP}:3030"
+             echo "${API_URL}"
+             if curl "${API_URL}/api/status" | grep "ok"
+             then
+             return 0
+             else
+             return 1
+             fi
 
   smoke-test-frontend:
     docker:
@@ -457,6 +463,11 @@ jobs:
             else
               exit 1
             fi 
+
+      - destroy_environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          
+      - revert-migrations          
     # docker:
     #   - image: python:3.7-alpine3.11
     #     environment:
