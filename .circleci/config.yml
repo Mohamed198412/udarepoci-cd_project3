@@ -437,17 +437,17 @@ jobs:
           command: |
             apk add --update curl nodejs npm ansible zip
             pip install awscli
-               
+            npm i
+            npx fix-has-install-script
+            fix-has-install-script
+            npm run build
       - add_ssh_keys:
           fingerprints: [ "7d:21:d4:90:fd:db:3c:73:6e:59:3c:af:be:d9:22:c1" ]
       - run:
           name: Setup EC2 instance & copy compiled backend to the EC2 instance
           command: |
             cd ~/project/backend
-            npm i
-            npx fix-has-install-script
-            fix-has-install-script
-            npm run build
+
             cd ..
             tar -C backend -czvf artifact.tar.gz .
             cat ~/project/.circleci/ansible/inventory.txt

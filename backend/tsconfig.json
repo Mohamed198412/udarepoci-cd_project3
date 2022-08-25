@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "lib": ["es2020"],
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "target": "es2022",
     "declaration": true,
     "noImplicitAny": false,
     "removeComments": true,
@@ -8,7 +11,6 @@
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es6",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./src"
