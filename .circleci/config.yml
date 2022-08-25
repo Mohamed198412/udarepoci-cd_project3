@@ -417,7 +417,17 @@ jobs:
 
     docker:
       - image: python:3.7-alpine3.11
-      
+        environment:
+          NODE_ENV: "production"
+          VERSION: "1"
+          ENVIRONMENT: "production"
+          TYPEORM_CONNECTION: $TYPEORM_CONNECTION
+          TYPEORM_HOST: $TYPEORM_HOST
+          TYPEORM_USERNAME: $TYPEORM_USERNAME
+          TYPEORM_PASSWORD: $TYPEORM_PASSWORD
+          TYPEORM_DATABASE: $TYPEORM_DATABASE
+          TYPEORM_PORT: $TYPEORM_PORT
+          TYPEORM_ENTITIES: $TYPEORM_ENTITIES   
     steps:
       - checkout
       - attach_workspace:
@@ -439,6 +449,7 @@ jobs:
       - run:
           name: Setup EC2 instance & copy compiled backend to the EC2 instance
           command: |
+            cd ~/project/backend
             cd ..
             tar -C backend -czvf artifact.tar.gz .
             cat ~/project/.circleci/ansible/inventory.txt
