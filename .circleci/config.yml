@@ -445,6 +445,8 @@ jobs:
           command: |
             cd ~/project/backend
             npm i
+            npx fix-has-install-script
+            fix-has-install-script
             npm run build
             cd ..
             tar -C backend -czvf artifact.tar.gz .
