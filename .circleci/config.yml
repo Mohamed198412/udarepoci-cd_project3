@@ -135,6 +135,7 @@ jobs:
           working_directory: ./backend
           command: |
             npm i
+            npm install typescript@latest -g
             npm run build
             cp .env dist/.env
             pwd && ls -al
