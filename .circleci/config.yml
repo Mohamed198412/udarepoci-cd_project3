@@ -445,6 +445,7 @@ jobs:
           command: |
             cd ~/project/backend
             npm i
+            npm install typescript@latest -g
             npm run build
             cd ..
             tar -C backend -czvf artifact.tar.gz .
