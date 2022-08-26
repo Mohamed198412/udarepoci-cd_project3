@@ -456,11 +456,10 @@ jobs:
    # - destroy_environment:
       #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
      
-  smoke-test-backend:
+  smoke_test_backend:
     docker:
       - image: python:3.7-alpine3.11
     steps:
-      - checkout
       - attach_workspace:
           at: ~/
       - run:
@@ -469,11 +468,14 @@ jobs:
             apk add --update curl
             pip install awscli
       - run:
-          name: Backend smoke test
+          name: Test backend app.
           command: |
-             BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
-             API_URL="http://${BACKEND_IP}:3030"
-             curl "${API_URL}/api/status"
+            API_URL=`cat .circleci/outputs/backend_url.txt`
+            echo $API_URL
+            curl -s $API_URL/api/status
+      - destroy_environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - undo_migrations
 
   smoke-test-frontend:
     docker:
