@@ -24,7 +24,7 @@
     production: yes
 
 - name: "install nodejs 14.20.1"
-  become: true
+  # become: true
   shell: |
    curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 
