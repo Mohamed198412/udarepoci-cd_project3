@@ -1,23 +1,23 @@
 
 - name: "update apt"
-  become: true
+  # become: true
   apt:
     update_cache: yes
 
 - name: "upgrade apt packages"
-  become: true
+  # become: true
   apt:
     upgrade: "yes"
 
 - name: "install dependencies."
-  become: true
+  # become: true
   apt:
     name: ["nodejs", "npm"]
     state: latest
     update_cache: yes
 
 - name: "install n"
-  become: true
+  # become: true
   npm:
     name: n
     global: yes
@@ -29,7 +29,7 @@
    curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 
 - name: "install pm2"
-  become: true
+  # become: true
   npm:
     name: pm2
     global: yes
