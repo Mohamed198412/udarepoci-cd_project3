@@ -12,10 +12,9 @@
   - name: "Install dependencies for project"
     shell: |
         cd /home/ubuntu/
-            
+        sudo npm install    
 
   - name: "run server"
-  - name:  start app
   - command:  pm2 start main.js
     args:
       chdir: /home/ubuntu/dist
