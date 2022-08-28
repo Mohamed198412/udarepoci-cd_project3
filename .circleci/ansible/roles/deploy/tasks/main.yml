@@ -19,7 +19,7 @@
       chdir: /home/ubuntu/dist
 
     shell : |
-        cd /home/ubuntu/dist
+        cd /home/ubuntu/
         npm install
         sudo pm2 start main.js       
         sudo pm2 start npm -- start
