@@ -19,10 +19,10 @@
       chdir: /home/ubuntu/dist
 
     shell : |
-        cd /home/ubuntu/dist
-        export
-        cd /home/ubuntu/dist
-        pm2 start main.js
+        cd /home/ubuntu/
+        sudo pm2 start main.js
+        sudo pm2 stop default
+        sudo pm2 start npm -- start
         
     # shell : |
     #     cd /home/ubuntu/dist
