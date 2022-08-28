@@ -13,12 +13,18 @@
   - name: "run server"
     args:
       chdir: /home/ubuntu/dist
-   
+
     shell : |
-        cd /home/ubuntu/
-     
-        pm2 stop default
-        pm2 start npm -- start
+        cd /home/ubuntu/dist
+        export
+        cd /home/ubuntu/dist
+        pm2 start main.js
+        
+    # shell : |
+    #     cd /home/ubuntu/dist
+    #     pm2 start main.js
+    #     pm2 stop default
+    #     pm2 start npm -- start
     environment:
       ENVIRONMENT: production
       TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
