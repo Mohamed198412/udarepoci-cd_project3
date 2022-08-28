@@ -15,9 +15,9 @@
         sudo npm install    
 
   - name: "run server"
-  - command:  pm2 start main.js
+  - command: pm2 start main.js
     args:
-      chdir: /home/ubuntu/dist
+     chdir:  /home/ubuntu/dist
 
     # args:
     #   chdir: /home/ubuntu/dist
