@@ -12,7 +12,7 @@
   - name: "Install dependencies for project"
     shell: |
         cd /home/ubuntu/
-        npm install      
+            
 
   - name: "run server"
     args:
