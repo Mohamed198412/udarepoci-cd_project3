@@ -15,14 +15,19 @@
             
 
   - name: "run server"
+  - name:  start app
+  - command:  pm2 start main.js
     args:
       chdir: /home/ubuntu/dist
 
-    shell : |
-        cd /home/ubuntu/
-        npm install
-        sudo pm2 start main.js       
-        sudo pm2 start npm -- start
+    # args:
+    #   chdir: /home/ubuntu/dist
+
+    # shell : |
+    #     cd /home/ubuntu/
+    #     npm install
+    #     sudo pm2 start main.js       
+    #     sudo pm2 start npm -- start
         
     # shell : |
     #     cd /home/ubuntu/dist
