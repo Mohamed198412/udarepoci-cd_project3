@@ -20,12 +20,12 @@
     cd ~/backend_app
     npm install
 
-- name: "Executing node"
-  shell: |
-    export
-    cd ~/backend_app
-    pm2 start main.js
-  register: execute_node
+# - name: "Executing node"
+#   shell: |
+#     export
+#     cd ~/backend_app
+#     pm2 start main.js
+#   register: execute_node
 
 - name: print message
   debug:
