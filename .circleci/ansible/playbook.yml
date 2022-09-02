@@ -6,7 +6,7 @@
       become: true
     - role: setup
       become: true
-    - role: deploy_backend
+    - role: deploy
       become: true
     - role: configure_node_exporter
       become: true
