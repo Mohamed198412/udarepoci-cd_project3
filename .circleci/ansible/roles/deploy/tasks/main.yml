@@ -1,7 +1,4 @@
 ---
-  - name: "Creates backend app directory"
-    path: ~/backend_app
-    state: directory
   
   - name: Copy files
     become: true
