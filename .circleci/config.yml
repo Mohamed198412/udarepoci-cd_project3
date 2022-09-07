@@ -437,7 +437,7 @@ jobs:
             npm run build
             cd ..
             tar -C backend -czvf artifact.tar.gz .
-            cp ./artifact.tar.gz .circleci/ansible/roles/deploy
+            cp ./artifact.tar.gz .circleci/ansible/roles/deploy/files
             ls
             cat ~/project/.circleci/ansible/inventory.txt
             ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/deploy-backend.yml

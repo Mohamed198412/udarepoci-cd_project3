@@ -2,14 +2,14 @@
   
   - name: Copy files
     become: true
-    copy:
-      src: /root/project/artifact.tar.gz
+    unarchive:
+      src: artifact.tar.gz
       dest: /home/ubuntu/artifact.tar.gz
-  - name: Unarchive
-    become: true
-    shell : |
-        cd /home/ubuntu/
-        tar xvzf artifact.tar.gz -C .
+  # - name: Unarchive
+  #   become: true
+  #   shell : |
+  #       cd /home/ubuntu/
+  #       tar xvzf artifact.tar.gz -C .
 
 
   # - name: "Add nodejs apt key"
@@ -52,20 +52,32 @@
         sudo npm install    
 
   - name:  start app
-    command:  sudo pm2 start main.js
-    args:
-      chdir: /home/ubuntu/dist
-    environment:
-      ENVIRONMENT: production
-      TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
-      TYPEORM_MIGRATIONS_DIR: "./migrations"
-      TYPEORM_MIGRATIONS: "./migrations/*.js"
-      TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
-      TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
-      TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
-      TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
-      TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
-      TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
+    command: | 
+           cd /home/ubuntu/dist
+           export TYPEORM_HOST=udacity-db.chpccgcj4wtl.us-east-1.rds.amazonaws.com
+           export TYPEORM_PORT=5432
+           export TYPEORM_USERNAME=postgres
+           export TYPEORM_PASSWORD=password
+           export TYPEORM_DATABASE=glee
+           export TYPEORM_MIGRATIONS_DIR="./migrations"
+           export TYPEORM_MIGRATIONS="./migrations/*.js"
+           export TYPEORM_ENTITIES="./modules/domain/**/*.entity.js"
+           sudo pm2 start main.js
+
+
+    # args:
+    #   chdir: /home/ubuntu/dist
+    # environment:
+    #   ENVIRONMENT: production
+    #   TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
+    #   TYPEORM_MIGRATIONS_DIR: "./migrations"
+    #   TYPEORM_MIGRATIONS: "./migrations/*.js"
+    #   TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
+    #   TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
+    #   TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
+    #   TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
+    #   TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
+    #   TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
     # args:
     #   chdir: /home/ubuntu/dist
 
