@@ -54,8 +54,10 @@
   - name:  start app
     command: | 
            cd /home/ubuntu/dist
-           export TYPEORM_HOST=udacity-db.chpccgcj4wtl.us-east-1.rds.amazonaws.com
-           export TYPEORM_PORT=5432
+           ls
+           pwd
+           export TYPEORM_HOST="udacity-db.chpccgcj4wtl.us-east-1.rds.amazonaws.com"
+           export TYPEORM_PORT="5432"
            export TYPEORM_USERNAME=postgres
            export TYPEORM_PASSWORD=password
            export TYPEORM_DATABASE=glee
