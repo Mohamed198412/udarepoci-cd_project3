@@ -4,7 +4,7 @@
     become: true
     unarchive:
       src: artifact.tar.gz
-      dest: /home/ubuntu/artifact.tar.gz
+      dest: /home/ubuntu/
   # - name: Unarchive
   #   become: true
   #   shell : |
