@@ -63,6 +63,8 @@
   - name: run app
     command: |
       cd /home/ubuntu/dist
+  - name: run app2
+    command: |
       npm start main.js
 
   # - name:  run app
