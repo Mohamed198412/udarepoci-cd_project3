@@ -64,7 +64,8 @@
         export TYPEORM_MIGRATIONS_DIR="./migrations"
         export TYPEORM_MIGRATIONS="./migrations/*.js"
         export TYPEORM_ENTITIES="./modules/domain/**/*.entity.js"
-        sudo pm2 start main.js
+        npm start main.js
+    # sudo pm2 start main.js
     # command: | 
     #        cd /home/ubuntu/dist
     #        ls
