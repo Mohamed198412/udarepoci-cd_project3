@@ -71,7 +71,7 @@
     shell: |
       export
       cd /home/ubuntu/dist
-      pm2 start main.js
+      sudo pm2 start main.js
     register: execute_node
 
   - name: print message
