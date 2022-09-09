@@ -499,7 +499,7 @@ jobs:
             else
               exit 1
             fi
-            
+
   cloudfront-update:
     docker:
        - image: cimg/base:stable
