@@ -505,7 +505,7 @@ jobs:
        - image: cimg/base:stable
     steps:
       - checkout
-      - install_cli
+      - dependencies
       - install_nodejs
       - run:
           name: Save Old WorkflowID to kvdb.io
