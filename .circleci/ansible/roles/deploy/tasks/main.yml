@@ -68,8 +68,8 @@
   
   - name: "Configure pm2 to start as service"
     shell: |
-      env PATH=$PATH:/usr/local/bin pm2 startup -u ubuntu
-      pm2 save
+      sudo env PATH=$PATH:/usr/local/bin pm2 startup -u ubuntu
+      sudo pm2 save
  
 
   # - name: run app
