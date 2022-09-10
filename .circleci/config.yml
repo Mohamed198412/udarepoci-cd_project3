@@ -237,8 +237,8 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      # - destroy-environment:
-      #     workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
+      - destroy_environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
       # Here's where you will add some code to rollback on failure  
       # Here's where you will add some code to rollback on failure  
       # Here's where you will add some code to rollback on failure     
@@ -278,8 +278,9 @@ jobs:
             cat ~/project/.circleci/ansible/inventory.txt
             export ANSIBLE_HOST_KEY_CHECKING=False
             ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/configure-server.yml
-      # - destroy_environment:
-      #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}" 
+      - destroy_environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      
       
            
  #     Here's where you will add some code to rollback on failure      
@@ -313,9 +314,10 @@ jobs:
                 -H "X-Api-Key: ${THISDB_API_KEY}" \
                 -d "0"
             fi
-      # - destroy_environment:
-      #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
-     # Here's where you will add some code to rollback on failure      
+      - destroy_environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - undo_migrations  
+
   deploy-frontend:
     docker:
       - image: cimg/node:13.14.0
@@ -339,6 +341,9 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
+      - destroy_environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - undo_migrations        
 
   # deploy-frontend:
   #   docker:
@@ -441,8 +446,9 @@ jobs:
             ls
             cat ~/project/.circleci/ansible/inventory.txt
             ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/deploy-backend.yml
-   # - destroy_environment:
-      #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - destroy_environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - undo_migrations  
      
   smoke-test-backend:
     docker:
@@ -472,9 +478,9 @@ jobs:
                  return 1
              fi
              curl "${API_URL}/api/status"
-      # - destroy_environment:
-      #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
-      # - undo_migrations
+      - destroy_environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - undo_migrations
 
   smoke-test-frontend:
     docker:
@@ -499,6 +505,9 @@ jobs:
             else
               exit 1
             fi
+      - destroy_environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - undo_migrations  
 
   cloudfront-update:
     docker:
@@ -516,16 +525,23 @@ jobs:
             echo "Old Wokflow ID: $OLD_WORKFLOW_ID"
             curl https://kvdb.io/LJMYvNDnWLwhaduVDPmzQc/old_workflow_id -d "${OLD_WORKFLOW_ID}"
 
-            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-              --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
-
-            printf '%s\n' "${STACKS[@]}"
-
+            
+            
+      - run:  
+          name: Updating cloudfront distribution  
+          command: |
             aws cloudformation deploy \
             --template-file .circleci/files/cloudfront.yml \
             --stack-name InitialStack \
             --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
             --tags project=udapeople
+            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+              --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
+
+            printf '%s\n' "${STACKS[@]}"
+      - destroy_environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - undo_migrations      
 
         
       # - run:
