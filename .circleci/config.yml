@@ -549,7 +549,7 @@ jobs:
                 --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
             echo Stack names: "${STACKS[@]}"
             # Fetch the Old workflow ID
-            export OldWorkflowID=$(curl --insecure https://kvdb.iokvdb.io/LJMYvNDnWLwhaduVDPmzQc/old_workflow_id)
+            export OldWorkflowID=$(curl --insecure https://kvdb.io/LJMYvNDnWLwhaduVDPmzQc/old_workflow_id)
             echo OldWorkflowID: ${OldWorkflowID}
             
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
