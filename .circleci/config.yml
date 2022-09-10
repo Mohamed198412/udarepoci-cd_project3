@@ -541,7 +541,7 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      - install_cli
+      - dependencies
       - install_nodejs
       - run:
           name: Remove old stacks and their files
