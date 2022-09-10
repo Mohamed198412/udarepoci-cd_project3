@@ -516,14 +516,14 @@ jobs:
             echo "Old Wokflow ID: $OLD_WORKFLOW_ID"
             curl https://kvdb.io/LJMYvNDnWLwhaduVDPmzQc/old_workflow_id -d "${OLD_WORKFLOW_ID}"
       - run:
-          name: Update cloudfront distribution
+          name: Updating cloudfront distribution
           command: |
             aws cloudformation deploy \
-              --template-file .circleci/files/cloudfront.yml \
-              --parameter-overrides ID="prod-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --stack-name udapeople-prod-cloudfront         
-  # cloudfront-update:
-  #   docker:
+            --template-file .circleci/files/cloudfront.yml \
+            --stack-name InitialStack \
+            --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
+            --tags project=udapeople
+    # docker:
   #     - image: amazon/aws-cli
   #   steps:
   #     - checkout
@@ -599,14 +599,14 @@ jobs:
   #           curl https://kvdb.io/LJMYvNDnWLwhaduVDPmzQc//migration_${CIRCLE_WORKFLOW_ID:0:7} \
   #           -H "X-Api-Key: ${THISDB_API_KEY}" \
   #           -d "$OldWorkflowID"  
-  #     - run:
-  #         name: Updating cloudfront distribution
-  #         command: |
-  #           aws cloudformation deploy \
-  #           --template-file .circleci/files/cloudfront.yml \
-  #           --stack-name InitialStack \
-  #           --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
-  #           --tags project=udapeople
+      - run:
+          name: Updating cloudfront distribution
+          command: |
+            aws cloudformation deploy \
+            --template-file .circleci/files/cloudfront.yml \
+            --stack-name InitialStack \
+            --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
+            --tags project=udapeople
       # - destroy_environment:
       #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
