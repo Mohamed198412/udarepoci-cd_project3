@@ -538,7 +538,7 @@ jobs:
             printf '%s\n' "${STACKS[@]}"
       - destroy_environment:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
-      - undo_migrations      
+      - revert-migrations      
 
         
       # - run:
