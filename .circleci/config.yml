@@ -508,30 +508,56 @@ jobs:
       # - destroy_environment:
       #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
       # - revert-migrations  
-      
   cloudfront-update:
     docker:
-      - image: cimg/base:2021.04
+      - image: amazon/aws-cli
     steps:
       - checkout
-      - dependencies
       - run:
-          name: get old workflow for clean
-          command: |
-            OldWorkflowID=$(aws cloudformation \
-            list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-            --no-paginate --output text)
-            curl https://kvdb.io/LJMYvNDnWLwhaduVDPmzQc/old_workflow_id \
-            -H "X-Api-Key: ${THISDB_API_KEY}" \
-            -d "$OldWorkflowID"  
+          name: "Install tar and gzip"
+          command: yum install -y tar gzip
       - run:
-          name: Updating cloudfront distribution
+          name: Update cloudfront distribution
           command: |
+            aws cloudformation \
+              list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+              --no-paginate --output text | cut -d '-' -f 2 >> ./.circleci/ansible/workflow.txt
+            cat ./.circleci/ansible/workflow.txt
+            pwd
             aws cloudformation deploy \
             --template-file .circleci/files/cloudfront.yml \
-            --stack-name InitialStack \
-            --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
+            --stack-name "udapeople-CloudFront" \
+            --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
             --tags project=udapeople
+      - destroy-environment
+      - revert-migrations
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/workflow.txt   
+  # cloudfront-update:
+  #   docker:
+  #     - image: cimg/base:2021.04
+  #   steps:
+  #     - checkout
+  #     - dependencies
+  #     - run:
+  #         name: get old workflow for clean
+  #         command: |
+  #           OldWorkflowID=$(aws cloudformation \
+  #           list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+  #           --no-paginate --output text)
+  #           curl https://kvdb.io/LJMYvNDnWLwhaduVDPmzQc/old_workflow_id \
+  #           -H "X-Api-Key: ${THISDB_API_KEY}" \
+  #           -d "$OldWorkflowID"  
+  #     - run:
+  #         name: Updating cloudfront distribution
+  #         command: |
+  #           aws cloudformation deploy \
+  #           --template-file .circleci/files/cloudfront.yml \
+  #           --stack-name InitialStack \
+  #           --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
+  #           --tags project=udapeople
   # cloudfront-update:
   #   docker:
   #      - image: cimg/base:stable
@@ -559,30 +585,56 @@ jobs:
       # - destroy_environment:
       #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
       # - revert-migrations      
-  
   cleanup:
     docker:
-      - image: cimg/base:stable
+       - image: amazon/aws-cli
     steps:
       - checkout
-      - dependencies
-      - install_nodejs
       - run:
-          name: Remove old stacks and their files
+          name: "Install tar and gzip"
+          command: yum install -y tar gzip
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Get old stack workflow id
           command: |
+            pwd
+            ls -la
+            cat .circleci/ansible/workflow.txt
+            export OldWorkflowID=$(cat .circleci/ansible/workflow.txt)
             export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-                --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
+              --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
+            echo OldWorkflowID: "${OldWorkflowID}"
             echo Stack names: "${STACKS[@]}"
-            # Fetch the Old workflow ID
-            export OldWorkflowID=$(curl --insecure https://kvdb.io/LJMYvNDnWLwhaduVDPmzQc/old_workflow_id)
-            echo OldWorkflowID: ${OldWorkflowID}
-            
-            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkflowID}" ]]
             then
               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
             fi
+  # cleanup:
+  #   docker:
+  #     - image: cimg/base:stable
+  #   steps:
+  #     - checkout
+  #     - dependencies
+  #     - install_nodejs
+  #     - run:
+  #         name: Remove old stacks and their files
+  #         command: |
+  #           export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+  #               --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
+  #           echo Stack names: "${STACKS[@]}"
+  #           # Fetch the Old workflow ID
+  #           export OldWorkflowID=$(curl --insecure https://kvdb.io/LJMYvNDnWLwhaduVDPmzQc/old_workflow_id)
+  #           echo OldWorkflowID: ${OldWorkflowID}
+            
+  #           if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+  #           then
+  #             aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
+  #             aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
+  #             aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
+  #           fi
         
       # - run:
       #     name: Updating cloudfront distribution
@@ -820,5 +872,5 @@ workflows:
           requires: [deploy-frontend]
       - cloudfront-update:
           requires: [smoke-test-backend,smoke-test-frontend]       
-      # - cleanup
-          # requires: [cloudfront-update]
+      - cleanup:
+          requires: [cloudfront-update]
