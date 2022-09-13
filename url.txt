@@ -4,13 +4,11 @@ https://github.com/Mohamed198412/udarepoci-cd_project3
 
 cloudfront url:
 
-http://d85ehsjvn52g1.cloudfront.net/#/employees
+http://d21nt2uqjza8x.cloudfront.net/#/employees
 
 public s3
 
-http://udapeople-6c6eefb.s3-website-us-east-1.amazonaws.com/
-
-https://s3.console.aws.amazon.com/s3/buckets/udapeople-75db128?region=us-east-1&tab=objects
+http://udapeople-681aead.s3-website-us-east-1.amazonaws.com/#/employees
 
 
 
